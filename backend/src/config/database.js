@@ -2,13 +2,7 @@ import pg from 'pg';
 import { env } from './env.js';
 
 const { Pool } = pg;
-console.log('[db-debug]', {
-  host: env.dbHost,
-  port: env.dbPort,
-  user: env.dbUser,
-  database: env.dbName,
-  nodeEnv: env.nodeEnv,
-});
+
 export const pool = new Pool({
   host: env.dbHost,
   port: env.dbPort,

@@ -41,13 +41,7 @@ if (isProduction) {
     console.warn(`[env] Using defaults for: ${missing.join(', ')}`);
   }
 }
-console.log('[env-debug]', {
-  NODE_ENV: process.env.NODE_ENV,
-  DB_HOST: process.env.DB_HOST,
-  DB_PORT: process.env.DB_PORT,
-  DB_USER: process.env.DB_USER,
-  DB_NAME: process.env.DB_NAME,
-});
+
 export const env = {
   nodeEnv,
   port: Number(getEnv('PORT')),
