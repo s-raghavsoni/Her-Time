@@ -1,0 +1,24 @@
+import { env } from '../config/env.js';
+
+export function notFoundHandler(_req, res) {
+  res.status(404).json({
+    success: false,
+    message: 'Route not found',
+  });
+}
+
+export function errorHandler(err, _req, res, next) {
+  void next;
+  const statusCode = err.statusCode ?? 500;
+  const message = err.message ?? 'Internal server error';
+
+  if (statusCode >= 500) {
+    console.error('[error]', err);
+  }
+
+  res.status(statusCode).json({
+    success: false,
+    message,
+    ...(env.isProduction ? {} : { stack: err.stack }),
+  });
+}
