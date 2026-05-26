@@ -47,12 +47,12 @@ export const env = {
   nodeEnv,
   port: Number(getEnv('PORT')),
 
-  dbHost: getEnv('DB_HOST'),
-  dbPort: Number(getEnv('DB_PORT')),
-  dbUser: getEnv('DB_USER'),
-  dbPassword: getEnv('DB_PASSWORD'),
-  dbName: getEnv('DB_NAME'),
-
+  // dbHost: getEnv('DB_HOST'),
+  // dbPort: Number(getEnv('DB_PORT')),
+  // dbUser: getEnv('DB_USER'),
+  // dbPassword: getEnv('DB_PASSWORD'),
+  // dbName: getEnv('DB_NAME'),
+  databaseUrl: getEnv('DATABASE_URL'),
   corsOrigin: getEnv('CORS_ORIGIN'),
   jwtSecret: getEnv('JWT_SECRET'),
   isProduction,
