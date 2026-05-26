@@ -29,3 +29,10 @@ export function registerUser(body) {
     body: JSON.stringify(body),
   });
 }
+
+export function loginUser(body) {
+  return request('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+}

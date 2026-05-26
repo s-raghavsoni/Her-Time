@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { fetchHealth } from './services/api';
+import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 
 function Home() {
@@ -37,8 +38,14 @@ function Home() {
 }
 
 function App() {
-  if (window.location.pathname === '/register') {
+  const path = window.location.pathname;
+
+  if (path === '/register') {
     return <RegisterPage />;
+  }
+
+  if (path === '/login') {
+    return <LoginPage />;
   }
 
   return <Home />;
