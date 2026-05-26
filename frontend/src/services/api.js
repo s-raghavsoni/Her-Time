@@ -56,3 +56,50 @@ export async function fetchCurrentUser(token) {
 
   return data;
 }
+
+function authHeaders(token) {
+  return {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  };
+}
+
+export async function fetchProviderProfile(token) {
+  const response = await fetch(`${API_BASE}/api/provider/profile`, {
+    headers: authHeaders(token),
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    const message = data.message || `API error: ${response.status}`;
+    const err = new Error(message);
+    err.status = response.status;
+    throw err;
+  }
+
+  return data.profile;
+}
+
+export async function createProviderProfile(token, body) {
+  const response = await fetch(`${API_BASE}/api/provider/profile`, {
+    method: 'POST',
+    headers: authHeaders(token),
+    body: JSON.stringify(body),
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    const message = data.message || `API error: ${response.status}`;
+    const err = new Error(message);
+    err.status = response.status;
+    throw err;
+  }
+
+  return data;
+}
