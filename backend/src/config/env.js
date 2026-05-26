@@ -14,10 +14,11 @@ const defaults = {
   DB_HOST: 'localhost',
   DB_PORT: '5432',
   DB_USER: 'postgres',
-  DB_PASSWORD: '',
+  DB_PASSWORD: 'Raghav@18',
   DB_NAME: 'her_time',
 
   CORS_ORIGIN: 'http://localhost:5173',
+  JWT_SECRET: 'hertime_super_secret_change_this',
 };
 const requiredInProduction = ['DATABASE_URL'];
 
@@ -53,6 +54,7 @@ export const env = {
   dbName: getEnv('DB_NAME'),
 
   corsOrigin: getEnv('CORS_ORIGIN'),
+  jwtSecret: getEnv('JWT_SECRET'),
   isProduction,
   backendRoot,
 };

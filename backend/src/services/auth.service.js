@@ -1,6 +1,11 @@
 import { randomUUID } from 'node:crypto';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { pool } from '../config/database.js';
+import { env } from '../config/env.js';
+
+const USER_PUBLIC_FIELDS =
+  'id, full_name, phone_number, email, city, role, is_verified, created_at';
 
 const VALID_ROLES = [
   'customer',
@@ -86,4 +91,50 @@ export async function registerUser(body) {
 
     throw err;
   }
+}
+
+export async function loginUser(body) {
+  const { phone_number, password } = body ?? {};
+
+  if (!phone_number) {
+    throw httpError('Phone number is required', 400);
+  }
+
+  if (!password) {
+    throw httpError('Password is required', 400);
+  }
+
+  const { rows } = await pool.query(
+    `SELECT id, full_name, phone_number, email, city, role, is_verified, created_at, password_hash
+     FROM users
+     WHERE phone_number = $1`,
+    [String(phone_number).trim()],
+  );
+
+  const user = rows[0];
+
+  if (!user) {
+    throw httpError('Invalid credentials', 401);
+  }
+
+  const passwordMatch = await bcrypt.compare(password, user.password_hash);
+
+  if (!passwordMatch) {
+    throw httpError('Invalid credentials', 401);
+  }
+
+  delete user.password_hash;
+
+  const token = jwt.sign({ sub: user.id }, env.jwtSecret, { expiresIn: '7d' });
+
+  return { token, user };
+}
+
+export async function getUserById(id) {
+  const { rows } = await pool.query(
+    `SELECT ${USER_PUBLIC_FIELDS} FROM users WHERE id = $1`,
+    [id],
+  );
+
+  return rows[0] ?? null;
 }
