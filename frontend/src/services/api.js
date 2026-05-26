@@ -9,13 +9,23 @@ async function request(path, options = {}) {
     ...options,
   });
 
+  const data = await response.json().catch(() => ({}));
+
   if (!response.ok) {
-    throw new Error(`API error: ${response.status}`);
+    const message = data.message || `API error: ${response.status}`;
+    throw new Error(message);
   }
 
-  return response.json();
+  return data;
 }
 
 export function fetchHealth() {
   return request('/api/health');
+}
+
+export function registerUser(body) {
+  return request('/api/auth/register', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
 }

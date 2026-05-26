@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { fetchHealth } from './services/api';
+import RegisterPage from './pages/RegisterPage';
 
-function App() {
+function Home() {
   const [health, setHealth] = useState(null);
   const [error, setError] = useState(null);
 
@@ -33,6 +34,14 @@ function App() {
       </main>
     </div>
   );
+}
+
+function App() {
+  if (window.location.pathname === '/register') {
+    return <RegisterPage />;
+  }
+
+  return <Home />;
 }
 
 export default App;
