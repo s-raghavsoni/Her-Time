@@ -36,3 +36,23 @@ export function loginUser(body) {
     body: JSON.stringify(body),
   });
 }
+
+export async function fetchCurrentUser(token) {
+  const response = await fetch(`${API_BASE}/api/auth/me`, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    const message = data.message || `API error: ${response.status}`;
+    const err = new Error(message);
+    err.status = response.status;
+    throw err;
+  }
+
+  return data;
+}

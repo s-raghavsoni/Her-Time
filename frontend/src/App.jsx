@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { fetchHealth } from './services/api';
+import DashboardPage from './pages/DashboardPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+
+const TOKEN_KEY = 'hertime_token';
 
 function Home() {
   const [health, setHealth] = useState(null);
@@ -40,12 +43,21 @@ function Home() {
 function App() {
   const path = window.location.pathname;
 
-  if (path === '/register') {
-    return <RegisterPage />;
+  if (path === '/dashboard') {
+    return <DashboardPage />;
   }
 
   if (path === '/login') {
     return <LoginPage />;
+  }
+
+  if (path === '/register') {
+    return <RegisterPage />;
+  }
+
+  if (path === '/' && localStorage.getItem(TOKEN_KEY)) {
+    window.location.assign('/dashboard');
+    return null;
   }
 
   return <Home />;
