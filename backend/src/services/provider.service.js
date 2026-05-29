@@ -116,7 +116,31 @@ export async function listProviders(roleFilter) {
   return rows;
 }
 
+// export async function getProviderByUserId(userId) {
+//   const { rows } = await pool.query(
+//     `SELECT ${PUBLIC_PROVIDER_FIELDS}
+//      FROM provider_profiles p
+//      INNER JOIN users u ON u.id = p.user_id
+//      WHERE p.user_id = $1 AND u.role = ANY($2::text[])`,
+//     [userId, PROVIDER_ROLES],
+//   );
+
+//   if (!rows[0]) {
+//     throw httpError('Provider not found', 404);
+//   }
+
+//   return rows[0];
+// }
+
+
 export async function getProviderByUserId(userId) {
+  const uuidRegex =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+  if (!uuidRegex.test(userId)) {
+    throw httpError('Provider not found', 404);
+  }
+
   const { rows } = await pool.query(
     `SELECT ${PUBLIC_PROVIDER_FIELDS}
      FROM provider_profiles p
