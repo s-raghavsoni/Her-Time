@@ -23,6 +23,11 @@ export function fetchHealth() {
   return request('/api/health');
 }
 
+export function fetchProviders(role) {
+  const query = role ? `?role=${encodeURIComponent(role)}` : '';
+  return request(`/api/providers${query}`);
+}
+
 export function registerUser(body) {
   return request('/api/auth/register', {
     method: 'POST',

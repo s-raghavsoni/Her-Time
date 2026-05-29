@@ -3,6 +3,7 @@ import { fetchHealth } from './services/api';
 import DashboardPage from './pages/DashboardPage';
 import LoginPage from './pages/LoginPage';
 import ProviderProfilePage from './pages/ProviderProfilePage';
+import ProvidersPage from './pages/ProvidersPage';
 import RegisterPage from './pages/RegisterPage';
 
 const TOKEN_KEY = 'hertime_token';
@@ -58,6 +59,10 @@ function App() {
 
   if (path === '/provider/profile') {
     return <ProviderProfilePage />;
+  }
+
+  if (path === '/providers') {
+    return <ProvidersPage />;
   }
 
   if (path === '/' && localStorage.getItem(TOKEN_KEY)) {

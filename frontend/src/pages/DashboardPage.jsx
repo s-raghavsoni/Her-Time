@@ -135,7 +135,15 @@ export default function DashboardPage() {
             <button
               key={item}
               type="button"
-              onClick={item === 'Logout' ? handleLogout : undefined}
+              onClick={
+                item === 'Logout'
+                  ? handleLogout
+                  : item === 'Browse Providers'
+                    ? () => {
+                        window.location.assign('/providers');
+                      }
+                    : undefined
+              }
               className={`rounded-lg px-3 py-2.5 text-left text-sm font-medium transition ${
                 item === 'Dashboard'
                   ? 'bg-brand-50 text-brand-700'
@@ -201,6 +209,7 @@ export default function DashboardPage() {
           <section className="mt-6 flex flex-wrap gap-3">
             <button
               type="button"
+              onClick={() => window.location.assign('/providers')}
               className="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700"
             >
               Browse Providers
