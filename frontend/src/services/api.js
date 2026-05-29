@@ -112,3 +112,22 @@ export async function createProviderProfile(token, body) {
 
   return data;
 }
+
+export async function createBooking(token, body) {
+  const response = await fetch(`${API_BASE}/api/bookings`, {
+    method: 'POST',
+    headers: authHeaders(token),
+    body: JSON.stringify(body),
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    const message = data.message || `API error: ${response.status}`;
+    const err = new Error(message);
+    err.status = response.status;
+    throw err;
+  }
+
+  return data;
+}

@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
-import { fetchProvider } from '../services/api';
+import {
+  createBooking,
+  fetchProvider,
+} from '../services/api';
 
 function formatRole(role) {
   return role.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
@@ -19,6 +22,23 @@ export default function ProviderDetailPage({ userId }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [photoError, setPhotoError] = useState(false);
+  const [showBookingForm, setShowBookingForm] =
+  useState(false);
+
+const [message, setMessage] =
+  useState('');
+
+const [serviceDate, setServiceDate] =
+  useState('');
+
+const [bookingLoading, setBookingLoading] =
+  useState(false);
+
+const [bookingSuccess, setBookingSuccess] =
+  useState('');
+
+const [bookingError, setBookingError] =
+  useState('');
 
   useEffect(() => {
     let cancelled = false;
@@ -46,7 +66,37 @@ export default function ProviderDetailPage({ userId }) {
       cancelled = true;
     };
   }, [userId]);
-
+  async function handleBooking() {
+    try {
+      setBookingLoading(true);
+      setBookingError('');
+      setBookingSuccess('');
+  
+      const token =
+        localStorage.getItem('hertime_token');
+  
+      await createBooking(token, {
+        provider_user_id: provider.user_id,
+        message,
+        service_date: serviceDate,
+      });
+  
+      setBookingSuccess(
+        'Request sent successfully',
+      );
+  
+      setMessage('');
+      setServiceDate('');
+      setShowBookingForm(false);
+    } catch (err) {
+      setBookingError(
+        err.message ||
+          'Failed to send request',
+      );
+    } finally {
+      setBookingLoading(false);
+    }
+  }
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6">
@@ -149,12 +199,87 @@ export default function ProviderDetailPage({ userId }) {
               </div>
             </section>
 
-            <button
-              type="button"
-              className="w-full rounded-xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700"
-            >
-              Request Service
-            </button>
+            <div className="mt-6">
+  <button
+    type="button"
+    onClick={() =>
+      setShowBookingForm(
+        !showBookingForm,
+      )
+    }
+    className="rounded-xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-700"
+  >
+    Request Service
+  </button>
+
+  {showBookingForm && (
+    <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <h3 className="mb-4 text-lg font-semibold text-slate-900">
+        Request Service
+      </h3>
+
+      <div className="space-y-4">
+        <div>
+          <label className="mb-1 block text-sm font-medium text-slate-700">
+            Service Date
+          </label>
+
+          <input
+            type="datetime-local"
+            value={serviceDate}
+            onChange={(e) =>
+              setServiceDate(
+                e.target.value,
+              )
+            }
+            className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-brand-500"
+          />
+        </div>
+
+        <div>
+          <label className="mb-1 block text-sm font-medium text-slate-700">
+            Message
+          </label>
+
+          <textarea
+            rows="4"
+            value={message}
+            onChange={(e) =>
+              setMessage(
+                e.target.value,
+              )
+            }
+            placeholder="Describe what help you need..."
+            className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-brand-500"
+          />
+        </div>
+
+        {bookingError && (
+          <p className="text-sm text-red-600">
+            {bookingError}
+          </p>
+        )}
+
+        {bookingSuccess && (
+          <p className="text-sm text-green-600">
+            {bookingSuccess}
+          </p>
+        )}
+
+        <button
+          type="button"
+          onClick={handleBooking}
+          disabled={bookingLoading}
+          className="rounded-xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60"
+        >
+          {bookingLoading
+            ? 'Sending...'
+            : 'Send Request'}
+        </button>
+      </div>
+    </div>
+  )}
+</div>
           </div>
         </article>
       </main>
