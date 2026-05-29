@@ -84,3 +84,32 @@ export async function getProviderProfile(userId) {
 
   return rows[0];
 }
+
+export async function listProviders(roleFilter) {
+  if (roleFilter !== undefined && !PROVIDER_ROLES.includes(roleFilter)) {
+    throw httpError('Invalid role', 400);
+  }
+
+  const params = [roleFilter ?? PROVIDER_ROLES];
+  const roleClause = roleFilter ? 'u.role = $1' : 'u.role = ANY($1::text[])';
+
+  const { rows } = await pool.query(
+    `SELECT
+       u.id AS user_id,
+       u.full_name,
+       u.role,
+       p.bio,
+       p.experience_years,
+       p.hourly_rate,
+       p.service_area,
+       p.profile_photo_url,
+       p.is_available
+     FROM provider_profiles p
+     INNER JOIN users u ON u.id = p.user_id
+     WHERE ${roleClause}
+     ORDER BY p.is_available DESC`,
+    params,
+  );
+
+  return rows;
+}

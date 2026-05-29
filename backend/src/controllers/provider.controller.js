@@ -17,3 +17,12 @@ export async function getProfile(req, res, next) {
     next(err);
   }
 }
+
+export async function listProviders(req, res, next) {
+  try {
+    const providers = await providerService.listProviders(req.query.role);
+    res.json({ success: true, providers });
+  } catch (err) {
+    next(err);
+  }
+}
