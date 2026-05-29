@@ -26,3 +26,12 @@ export async function listProviders(req, res, next) {
     next(err);
   }
 }
+
+export async function getProviderByUserId(req, res, next) {
+  try {
+    const provider = await providerService.getProviderByUserId(req.params.userId);
+    res.json({ success: true, provider });
+  } catch (err) {
+    next(err);
+  }
+}

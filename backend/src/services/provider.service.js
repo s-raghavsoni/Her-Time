@@ -6,6 +6,17 @@ const PROVIDER_ROLES = ['home_cook', 'tutor', 'beautician', 'cleaning'];
 const PROFILE_FIELDS =
   'id, user_id, bio, experience_years, hourly_rate, service_area, profile_photo_url, is_available, created_at';
 
+const PUBLIC_PROVIDER_FIELDS = `
+  u.id AS user_id,
+  u.full_name,
+  u.role,
+  p.bio,
+  p.experience_years,
+  p.hourly_rate,
+  p.service_area,
+  p.profile_photo_url,
+  p.is_available`;
+
 function httpError(message, statusCode) {
   const err = new Error(message);
   err.statusCode = statusCode;
@@ -94,16 +105,7 @@ export async function listProviders(roleFilter) {
   const roleClause = roleFilter ? 'u.role = $1' : 'u.role = ANY($1::text[])';
 
   const { rows } = await pool.query(
-    `SELECT
-       u.id AS user_id,
-       u.full_name,
-       u.role,
-       p.bio,
-       p.experience_years,
-       p.hourly_rate,
-       p.service_area,
-       p.profile_photo_url,
-       p.is_available
+    `SELECT ${PUBLIC_PROVIDER_FIELDS}
      FROM provider_profiles p
      INNER JOIN users u ON u.id = p.user_id
      WHERE ${roleClause}
@@ -112,4 +114,20 @@ export async function listProviders(roleFilter) {
   );
 
   return rows;
+}
+
+export async function getProviderByUserId(userId) {
+  const { rows } = await pool.query(
+    `SELECT ${PUBLIC_PROVIDER_FIELDS}
+     FROM provider_profiles p
+     INNER JOIN users u ON u.id = p.user_id
+     WHERE p.user_id = $1 AND u.role = ANY($2::text[])`,
+    [userId, PROVIDER_ROLES],
+  );
+
+  if (!rows[0]) {
+    throw httpError('Provider not found', 404);
+  }
+
+  return rows[0];
 }

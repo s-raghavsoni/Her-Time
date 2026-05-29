@@ -121,8 +121,9 @@ export default function ProvidersPage() {
         {!loading && !error && providers.length > 0 && (
           <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {providers.map((provider) => (
-              <article
+              <a
                 key={provider.user_id}
+                href={`/provider/${provider.user_id}`}
                 className="flex flex-col rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
               >
                 <div className="flex items-start justify-between gap-3">
@@ -157,7 +158,7 @@ export default function ProvidersPage() {
                     {provider.hourly_rate != null ? `$${provider.hourly_rate}/hr` : 'Not listed'}
                   </p>
                 </div>
-              </article>
+              </a>
             ))}
           </div>
         )}

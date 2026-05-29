@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { fetchHealth } from './services/api';
 import DashboardPage from './pages/DashboardPage';
 import LoginPage from './pages/LoginPage';
+import ProviderDetailPage from './pages/ProviderDetailPage';
 import ProviderProfilePage from './pages/ProviderProfilePage';
 import ProvidersPage from './pages/ProvidersPage';
 import RegisterPage from './pages/RegisterPage';
@@ -59,6 +60,11 @@ function App() {
 
   if (path === '/provider/profile') {
     return <ProviderProfilePage />;
+  }
+
+  const providerDetailMatch = path.match(/^\/provider\/([^/]+)$/);
+  if (providerDetailMatch) {
+    return <ProviderDetailPage userId={providerDetailMatch[1]} />;
   }
 
   if (path === '/providers') {

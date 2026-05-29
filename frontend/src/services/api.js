@@ -28,6 +28,10 @@ export function fetchProviders(role) {
   return request(`/api/providers${query}`);
 }
 
+export function fetchProvider(userId) {
+  return request(`/api/providers/${encodeURIComponent(userId)}`);
+}
+
 export function registerUser(body) {
   return request('/api/auth/register', {
     method: 'POST',
